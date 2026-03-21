@@ -37,14 +37,10 @@ async function main() {
         isActive: true,
         tenantId: tenant.id,
     }
-    const integration = await prisma.integration.findFirst({
-        where: {
-            tenantId: tenant.id,
-        },
-    });
+    const integrationId = 'cmn0tbf7t0000cdsfgoerqef7a';
     await prisma.integration.upsert({   
         where: {
-            id: integration?.id,
+            id: integrationId,
         },
         update: integraitonData,
         create: integraitonData,

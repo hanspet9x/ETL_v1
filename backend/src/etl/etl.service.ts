@@ -77,7 +77,7 @@ export class EtlService {
                     integrationId: file.integrationId,
                     processedCount: 0,
                     failedCount: 0,
-                    totalCount: 0,
+                    totalCount: file.totalRecords ?? 0,
                     skippedRecordCount: 0,
                     etag: file.etag ?? '',
                     lastModified: file.lastModified ?? undefined,
@@ -163,6 +163,8 @@ export class EtlService {
             tenantFile.etag = file?.etag ?? undefined;
             tenantFile.lastModified = file?.lastModified ?? undefined;
             tenantFile.contentLength = file?.contentLength ?? undefined;
+            tenantFile.totalRecords = tenantFile.data?.length
+            console.log('totalRecords', tenantFile.totalRecords);
             tenantFiles.push(tenantFile);
         }
 

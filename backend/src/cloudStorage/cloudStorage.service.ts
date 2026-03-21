@@ -74,7 +74,6 @@ export class CloudStorageService {
             raw: true,
             defval: '',
         });
-        console.log('json', json);
         return json;
     }
 }

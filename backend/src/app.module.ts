@@ -23,6 +23,7 @@ import { TenantsModule } from './tenants/tenants.module';
       autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
       sortSchema: true,
       introspection: true,
+      playground: true
     }),
     PrismaModule,
     TenantsModule,

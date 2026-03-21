@@ -8,7 +8,9 @@
     "start": "node dist/src/main.js",
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev",
-    "postinstall": "prisma generate"
+    "prisma:seed": "prisma db seed",
+    "postinstall": "prisma generate",
+    "run-etl": "tsx ./src/run-etl.ts"
   },
   "dependencies": {
     "@apollo/server": "^5.4.0",

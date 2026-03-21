@@ -26,10 +26,10 @@ Internet is needed for:
 
 ## 1. Open The Project
 
-From your terminal:
+From your terminal route to where this repo is downloaded:
 
 ```bash
-cd /Users/hanspet/Documents/tilla_v1
+cd /__{pwd}__/tilla_v1
 ```
 
 ## 2. Install Dependencies
@@ -42,7 +42,7 @@ pnpm install
 
 ## 3. Create Env Files
 
-At minimum, create a root `.env` file:
+At minimum, create a root `.env` file if not present and run the below:
 
 ```bash
 cp .env.example .env
@@ -140,14 +140,17 @@ The frontend is only useful if the database contains at least:
 If you already have a seed script in [`backend/prisma/seed.ts`](/Users/hanspet/Documents/tilla_v1/backend/prisma/seed.ts), run it using the method your project expects.
 
 If not, you can still test the app after ETL runs successfully, as long as the database already contains tenants and active integrations.
+```bash
+pnpm --dir backend prisma:seed
+```
 
 ## 9. Run The ETL
 
 Open a third terminal and run:
 
+
 ```bash
-cd /Users/hanspet/Documents/tilla_v1/backend
-tsx ./src/run-etl.ts
+pnpm --dir backend run-etl
 ```
 
 What ETL does:
@@ -211,13 +214,14 @@ pnpm --dir backend start
 If you just want the shortest happy path:
 
 1. `pnpm install`
-2. `cp .env.example .env`
+2. `cp .env.example .env: only if .env is not present`
 3. `pnpm start:pg`
 4. `pnpm --dir backend prisma:migrate`
-5. `pnpm start:backend`
-6. `pnpm start:frontend`
-7. `cd backend && tsx ./src/run-etl.ts`
-8. open `http://localhost:5173`
+5. `pnpm --dir backend prisma:seed`
+6. `pnpm start:backend`
+7. `pnpm start:frontend`
+8. `pnpm --dir backend run-etl`
+9. open `http://localhost:5173`
 
 ## Troubleshooting
 

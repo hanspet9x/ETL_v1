@@ -106,6 +106,7 @@ function App() {
   const [integrationsLoading, setIntegrationsLoading] = useState(false);
   const [reportLoading, setReportLoading] = useState(false);
   const [seaportsLoading, setSeaportsLoading] = useState(false);
+  const [seaportsError, setSeaportsError] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -193,6 +194,7 @@ function App() {
   async function loadSeaports(direction?: 'next' | 'previous') {
     if (!selectedTenantId || !selectedIntegrationId) {
       setSeaportConnection(null);
+      setSeaportsError(null);
       return;
     }
 
@@ -213,6 +215,7 @@ function App() {
 
     try {
       setSeaportsLoading(true);
+      setSeaportsError(null);
       const data = await graphQLRequest<{ tenantSeaports: SeaportConnection }>(
         `
           query TenantSeaports(
@@ -253,8 +256,7 @@ function App() {
 
       setSeaportConnection(data.tenantSeaports);
     } catch (loadError) {
-      setError(loadError instanceof Error ? loadError.message : 'Unable to load seaports');
-      setSeaportConnection(null);
+      setSeaportsError(loadError instanceof Error ? loadError.message : 'Unable to load seaports');
     } finally {
       setSeaportsLoading(false);
     }
@@ -264,6 +266,7 @@ function App() {
     if (!selectedTenantId || !selectedIntegrationId) {
       setSyncRun(null);
       setSeaportConnection(null);
+      setSeaportsError(null);
       return;
     }
 
@@ -437,7 +440,9 @@ function App() {
             </div>
           </div>
 
-          <div className="table-wrap">
+          {seaportsError ? <p className="section-error">{seaportsError}</p> : null}
+
+          <div className={`table-wrap ${seaportsLoading ? 'table-wrap-loading' : ''}`}>
             <table>
               <thead>
                 <tr>
@@ -450,13 +455,7 @@ function App() {
                 </tr>
               </thead>
               <tbody>
-                {seaportsLoading ? (
-                  <tr>
-                    <td colSpan={6} className="empty-cell">
-                      Loading seaports...
-                    </td>
-                  </tr>
-                ) : seaportConnection?.nodes.length ? (
+                {seaportConnection?.nodes.length ? (
                   seaportConnection.nodes.map((seaport) => (
                     <tr key={seaport.id}>
                       <td>{formatValue(seaport.portName)}</td>
@@ -470,12 +469,15 @@ function App() {
                 ) : (
                   <tr>
                     <td colSpan={6} className="empty-cell">
-                      Placeholder
+                      {seaportsLoading ? 'Loading seaports...' : 'Placeholder'}
                     </td>
                   </tr>
                 )}
               </tbody>
             </table>
+            {seaportsLoading && seaportConnection?.nodes.length ? (
+              <div className="table-overlay">Loading next page...</div>
+            ) : null}
           </div>
           <p className="table-footnote">
             Showing {seaportConnection?.count ?? 0} record(s) on this page.

@@ -138,6 +138,12 @@ h1 {
   color: #ffd6d6;
 }
 
+.section-error {
+  margin: 0 0 14px;
+  color: #d75b5b;
+  font-weight: 600;
+}
+
 .panel {
   margin-top: 18px;
   padding: 22px;
@@ -241,9 +247,14 @@ h1 {
 }
 
 .table-wrap {
+  position: relative;
   overflow-x: auto;
   border-radius: 18px;
   border: 1px solid var(--panel-border);
+}
+
+.table-wrap-loading {
+  overflow: hidden;
 }
 
 table {
@@ -270,6 +281,17 @@ tbody tr:hover {
 .empty-cell {
   text-align: center;
   color: var(--text-muted);
+}
+
+.table-overlay {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background: color-mix(in srgb, var(--shell-bg) 72%, transparent);
+  color: var(--text-main);
+  font-weight: 700;
+  backdrop-filter: blur(2px);
 }
 
 .table-footnote {
