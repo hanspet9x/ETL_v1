@@ -40,6 +40,29 @@ Run:
 pnpm install
 ```
 
+If you want the fastest setup path, you can use the bootstrap script instead:
+
+```bash
+pnpm bootstrap
+```
+
+That command will:
+
+- create `.env` from `.env.example` if needed
+- install dependencies
+- start PostgreSQL and Adminer
+- generate Prisma client files
+- push the Prisma schema to the database
+- seed the database
+- run ETL
+
+After bootstrap finishes, start the app with:
+
+```bash
+pnpm start:backend
+pnpm start:frontend
+```
+
 ## 3. Create Env Files
 
 At minimum, create a root `.env` file if not present and run the below:
@@ -134,8 +157,8 @@ The frontend is only useful if the database contains at least:
 
 - one tenant
 - one active integration linked to that tenant
-- optional sync run data
-- optional seaport data
+- sync run data
+- seaport data
 
 If you already have a seed script in `[backend/prisma/seed.ts](/Users/hanspet/Documents/tilla_v1/backend/prisma/seed.ts)`, run it using the method your project expects.
 

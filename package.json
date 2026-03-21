@@ -4,9 +4,11 @@
   "private": true,
   "description": "Tilla monorepo",
   "scripts": {
+    "bootstrap": "sh ./scripts/bootstrap.sh",
     "start:pg": "docker compose up -d",
     "start:backend": "pnpm --dir backend dev",
     "start:frontend": "pnpm --dir frontend dev",
+    "run:etl": "pnpm --dir backend run-etl",
     "dev:backend": "pnpm --dir backend dev",
     "dev:frontend": "pnpm --dir frontend dev",
     "build": "pnpm --dir backend build && pnpm --dir frontend build",
