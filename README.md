@@ -1,10 +1,10 @@
-# Tilla V1
+# ETL V1
 
 This repo contains:
 
-- a NestJS backend in [`backend`](/Users/hanspet/Documents/tilla_v1/backend)
-- a React + Vite frontend in [`frontend`](/Users/hanspet/Documents/tilla_v1/frontend)
-- PostgreSQL + Adminer in [`docker-compose.yml`](/Users/hanspet/Documents/tilla_v1/docker-compose.yml)
+- a NestJS backend in `[backend](/Users/hanspet/Documents/tilla_v1/backend)`
+- a React + Vite frontend in `[frontend](/Users/hanspet/Documents/tilla_v1/frontend)`
+- PostgreSQL + Adminer in `[docker-compose.yml](/Users/hanspet/Documents/tilla_v1/docker-compose.yml)`
 - an ETL flow that pulls active integration files and writes seaport data into Postgres
 
 This guide is written for someone testing the project for the first time.
@@ -137,9 +137,10 @@ The frontend is only useful if the database contains at least:
 - optional sync run data
 - optional seaport data
 
-If you already have a seed script in [`backend/prisma/seed.ts`](/Users/hanspet/Documents/tilla_v1/backend/prisma/seed.ts), run it using the method your project expects.
+If you already have a seed script in `[backend/prisma/seed.ts](/Users/hanspet/Documents/tilla_v1/backend/prisma/seed.ts)`, run it using the method your project expects.
 
 If not, you can still test the app after ETL runs successfully, as long as the database already contains tenants and active integrations.
+
 ```bash
 pnpm --dir backend prisma:seed
 ```
@@ -147,7 +148,6 @@ pnpm --dir backend prisma:seed
 ## 9. Run The ETL
 
 Open a third terminal and run:
-
 
 ```bash
 pnpm --dir backend run-etl
@@ -266,3 +266,60 @@ Stop the process using that port or change the port in `.env`.
 - The backend uses Prisma with PostgreSQL.
 - The frontend uses Vite.
 - Adminer is only for easy database inspection while testing.
+
+## Production Considerations
+
+Before shipping this to production, these are the main edge cases and scaling concerns to handle.
+
+### Edge Cases To Cover Before Shipping
+
+- ETL idempotency: repeated ETL runs should not create duplicate seaports or inconsistent sync-run records.
+- Invalid tenant mappings: empty or incorrect `tillaToTenantMapping` values should fail clearly and be easy to debug.
+- Partial ETL failures: one broken tenant or integration should not stop the entire ETL process.
+- Large source files: avoid loading very large files fully into memory if they can grow over time.
+- Dirty source data: handle malformed locodes, missing coordinates, duplicates, bad encodings, and unexpected column names.
+- Pagination consistency: cursor pagination should remain stable even while new rows are being inserted.
+- Empty states: no tenants, no active integrations, no sync runs, or no seaport rows should all render gracefully.
+- Cloud storage failure handling: add retries, timeouts, and better error reporting for remote file fetches.
+- Secret handling: source tokens and credentials should never appear in logs, error messages, or exposed API responses.
+- Concurrency control: prevent overlapping ETL runs for the same tenant and integration from racing each other.
+- Database safety: use the right indexes, transactions, and constraints around the ETL write path.
+- Authentication and authorization: tenant-scoped access control should be in place before exposing this publicly.
+- Observability: structured logs, metrics, tracing, health checks, and alerts are important before go-live.
+
+### How To Scale This For High Traffic
+
+- separate the API workload from ETL workers so reads and ingestion do not compete directly
+- scale the backend horizontally behind a load balancer
+- add connection pooling and proper indexing in PostgreSQL
+- use read replicas if read-heavy traffic grows significantly
+- cache common GraphQL reads such as tenants, active integrations, and sync summaries
+- keep cursor pagination backed by stable indexed fields
+- prefer a push-based ingestion system instead of polling remote sources
+- let tenants upload files directly into managed object storage
+- trigger notifications when a new file lands in storage
+- start ETL automatically from that storage event instead of repeatedly checking for files
+- place storage events onto a queue so ETL workers can process them reliably and retry failures safely
+- enforce worker concurrency limits and per-tenant throttling
+- precompute or materialize heavy reporting views if dashboard complexity grows
+- host the Vite frontend as static assets behind a CDN
+- on AWS, a practical path would be:
+- frontend on S3 + CloudFront
+- backend API on ECS Fargate behind an ALB
+- tenant uploads pushed into S3
+- S3 event notifications sent to SQS or EventBridge
+- ETL workers on separate ECS tasks consuming those events
+- PostgreSQL on Amazon RDS
+- Redis on ElastiCache
+- secrets in Secrets Manager
+- logs and alarms in CloudWatch
+
+## Remote Team Values
+
+For a fully remote team, the things that matter most here are:
+
+- clear communication so progress, blockers, and decisions are visible
+- solid planning so priorities, scope, and ownership are understood early
+- trust so people can work independently and still stay aligned
+- accountability so work gets done and risks are raised early
+- strong written context through tickets, docs, and handoffs
