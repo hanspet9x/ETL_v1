@@ -1,0 +1,234 @@
+:root {
+  font-family: "Space Grotesk", "Segoe UI", sans-serif;
+  color: #f5efe4;
+  background:
+    radial-gradient(circle at top left, rgba(255, 162, 90, 0.16), transparent 28%),
+    radial-gradient(circle at bottom right, rgba(84, 176, 255, 0.12), transparent 26%),
+    linear-gradient(140deg, #0e1620 0%, #101a27 42%, #0b1119 100%);
+  line-height: 1.5;
+  font-weight: 400;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+}
+
+code {
+  font-family: "JetBrains Mono", "SFMono-Regular", monospace;
+}
+
+.page-shell {
+  min-height: 100vh;
+  padding: 32px 20px;
+}
+
+.dashboard-card {
+  width: min(1180px, 100%);
+  margin: 0 auto;
+  padding: 32px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 28px;
+  background: rgba(10, 17, 25, 0.76);
+  backdrop-filter: blur(16px);
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.35);
+}
+
+.section-heading {
+  margin-bottom: 28px;
+}
+
+.eyebrow {
+  margin: 0 0 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  font-size: 0.78rem;
+  color: #ffb37f;
+}
+
+h1 {
+  margin: 0;
+  font-size: clamp(2.4rem, 5vw, 4rem);
+  line-height: 1;
+}
+
+.lede {
+  margin: 20px 0 0;
+  max-width: 62ch;
+  font-size: 1.05rem;
+  color: rgba(244, 239, 232, 0.84);
+}
+
+.error-banner {
+  margin-bottom: 18px;
+  padding: 14px 16px;
+  border-radius: 16px;
+  background: rgba(181, 67, 67, 0.18);
+  border: 1px solid rgba(233, 117, 117, 0.32);
+  color: #ffd6d6;
+}
+
+.panel {
+  margin-top: 18px;
+  padding: 22px;
+  border-radius: 22px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.panel-header h2 {
+  margin: 0;
+  font-size: 1.1rem;
+}
+
+.panel-header span {
+  color: rgba(245, 239, 228, 0.68);
+  font-size: 0.95rem;
+}
+
+.selection-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.field {
+  display: grid;
+  gap: 8px;
+}
+
+.field span {
+  font-size: 0.92rem;
+  color: rgba(245, 239, 228, 0.72);
+}
+
+.field select {
+  width: 100%;
+  padding: 14px 16px;
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(8, 14, 21, 0.92);
+  color: inherit;
+  font: inherit;
+}
+
+.metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.metric-card {
+  padding: 18px;
+  border-radius: 18px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.03));
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.metric-card span {
+  display: block;
+  margin-bottom: 10px;
+  color: rgba(245, 239, 228, 0.66);
+  font-size: 0.9rem;
+}
+
+.metric-card strong {
+  font-size: 1.1rem;
+  line-height: 1.3;
+}
+
+.metric-card.wide {
+  grid-column: span 2;
+}
+
+.pager {
+  display: flex;
+  gap: 10px;
+}
+
+.pager button {
+  padding: 10px 14px;
+  border: 0;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #ff9b61, #ff7a59);
+  color: #121821;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.pager button:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+}
+
+.table-wrap {
+  overflow-x: auto;
+  border-radius: 18px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 720px;
+}
+
+thead {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+th,
+td {
+  padding: 14px 16px;
+  text-align: left;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+tbody tr:hover {
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.empty-cell {
+  text-align: center;
+  color: rgba(245, 239, 228, 0.64);
+}
+
+.table-footnote {
+  margin: 14px 0 0;
+  color: rgba(245, 239, 228, 0.68);
+}
+
+@media (max-width: 640px) {
+  .dashboard-card {
+    padding: 28px;
+    border-radius: 20px;
+  }
+
+  .selection-grid,
+  .metrics-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .metric-card.wide {
+    grid-column: span 1;
+  }
+
+  .panel-header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}

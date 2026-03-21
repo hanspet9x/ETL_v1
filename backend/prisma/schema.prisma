@@ -1,0 +1,96 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum IntegrationSource {
+  AZURE
+  AWS
+  GCP
+}
+
+enum IntegrationFileExtension {
+  XLSX
+  XLS
+  JSON
+}
+
+enum SyncRunStatus {
+  STARTED
+  PARTIALLY_COMPLETED
+  COMPLETED
+  FAILED
+}
+
+model Tenant {
+  id           String        @id @default(cuid())
+  name         String
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  integrations Integration[]
+  seaports     Seaport[]
+  syncRuns     SyncRun[]
+
+  @@index([id])
+}
+
+model Integration {
+  id                     String                   @id @default(cuid())
+  source                 IntegrationSource
+  sourceUrl              String
+  sourceToken            String
+  sourceFileExtension    IntegrationFileExtension
+  tillaToTenantMapping   Json
+  isActive               Boolean                  @default(false)
+  tenantId               String
+  createdAt              DateTime                 @default(now())
+  updatedAt              DateTime                 @updatedAt
+  tenant                 Tenant                   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  seaports               Seaport[]
+  syncRuns               SyncRun[]
+
+  @@index([tenantId, isActive])
+}
+
+model Seaport {
+  id            String       @id @default(cuid())
+  tenantId      String
+  integrationId String
+  portName      String
+  locode        String
+  latitude      String
+  longitude     String
+  countryIso    String?
+  timezoneOlson String?
+  tenant        Tenant       @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  integration   Integration  @relation(fields: [integrationId], references: [id], onDelete: Cascade)
+
+  @@unique([tenantId, locode])
+  @@index([tenantId, integrationId, id])
+}
+
+model SyncRun {
+  id                    String        @id @default(cuid())
+  tenantId              String
+  integrationId         String
+  status                SyncRunStatus
+  totalRecords          Int
+  totalRecordsProcessed Int
+  totalRecordsFailed    Int
+  totalRecordsSkipped   Int
+  eTag                  String?
+  lastModified          DateTime?
+  contentLength         Int?
+  startedAt             DateTime
+  completedAt           DateTime?
+  createdAt             DateTime      @default(now())
+  updatedAt             DateTime      @updatedAt
+  tenant                Tenant        @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  integration           Integration   @relation(fields: [integrationId], references: [id], onDelete: Cascade)
+
+  @@index([tenantId, integrationId, startedAt(sort: Desc)])
+}

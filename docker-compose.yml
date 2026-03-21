@@ -1,0 +1,25 @@
+services:
+  postgres:
+    image: postgres:17-alpine
+    container_name: tilla-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: tilla_v1
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  adminer:
+    image: adminer:5
+    container_name: tilla-adminer
+    restart: unless-stopped
+    depends_on:
+      - postgres
+    ports:
+      - "8080:8080"
+
+volumes:
+  postgres_data:
