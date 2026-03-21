@@ -36,8 +36,6 @@ export class CloudStorageService {
             if (!blob.name.endsWith(ext)) continue;
             // get the blob client
             const blobClient = containerClient.getBlobClient(blob.name);
-            //download to file
-            await blobClient.downloadToFile(blob.name);
             // get the blob properties
             const blobProperties = await blobClient.getProperties();
             console.log('blobProperties.etag', blobProperties.etag, 'etag', etag);
