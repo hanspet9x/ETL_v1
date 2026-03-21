@@ -1,7 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { ContainerClient } from "@azure/storage-blob";
 import { IntegrationFileExtension, IntegrationSource } from "generated/prisma/client";
-
+import * as XLSX from 'xlsx';
 @Injectable()
 export class CloudStorageService {
 
@@ -11,7 +11,7 @@ export class CloudStorageService {
         [IntegrationFileExtension.JSON]: '.json',
     }
     async getObject({ source, sourceUrl, sourceToken, sourceFileExtension, etag, lastModified, contentLength }:
-        { source: IntegrationSource, sourceUrl: string, sourceToken: string, sourceFileExtension: IntegrationFileExtension, etag: string, lastModified: Date, contentLength: number }) {
+        { source: IntegrationSource, sourceUrl: string, sourceToken: string, sourceFileExtension: IntegrationFileExtension, etag?: string, lastModified?: Date, contentLength?: number }) {
         switch (source) {
             case IntegrationSource.AZURE:
                 const url = `${sourceUrl}${sourceToken}`;
@@ -22,7 +22,8 @@ export class CloudStorageService {
         }
     }
 
-    async getAzureFile({ url, extension, etag, lastModified, contentLength }: { url: string, extension: IntegrationFileExtension, etag: string, lastModified: Date, contentLength: number }) {
+    async getAzureFile({ url, extension, etag, lastModified, contentLength }: { url: string, extension: IntegrationFileExtension, etag?: string, lastModified?: Date, contentLength?: number }) {
+        //check if url has read and list or expired
         const containerClient = new ContainerClient(url);
         // get a list of blobs in the container
         const ext = this.mapping[extension];
@@ -30,6 +31,8 @@ export class CloudStorageService {
             if (!blob.name.endsWith(ext)) continue;
             // get the blob client
             const blobClient = containerClient.getBlobClient(blob.name);
+            //download to file
+            await blobClient.downloadToFile(blob.name);
             // get the blob properties
             const blobProperties = await blobClient.getProperties();
             console.log('blobProperties.etag', blobProperties.etag, 'etag', etag);
@@ -50,10 +53,23 @@ export class CloudStorageService {
                     for await (const chunk of blobDownloadStream.readableStreamBody) {
                         chunks.push(chunk as Buffer);
                     }
-                    return Buffer.concat(chunks);
+                    const buffer = Buffer.concat(chunks);
+                    return {data: this.convertXlsxToJson(buffer), etag: blobProperties.etag, lastModified: blobProperties.lastModified, contentLength: blobProperties.contentLength};
                 }
             }
         }
         return null;
+    }
+
+    //convert xlsx to json
+    convertXlsxToJson(buffer: Buffer) {
+        const workbook = XLSX.read(buffer, { type: 'buffer' });
+        const json = XLSX.utils.sheet_to_json(workbook.Sheets[workbook.SheetNames[0]], {
+            header: 2,
+            raw: true,
+            defval: '',
+        });
+        console.log('json', json);
+        return json;
     }
 }

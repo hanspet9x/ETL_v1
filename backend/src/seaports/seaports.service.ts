@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 
 import { PrismaService } from '../prisma/prisma.service';
+import { Prisma, Seaport } from 'generated/prisma/client';
 
 type SeaportPageParams = {
   tenantId: string;
@@ -87,5 +88,33 @@ export class SeaportsService {
         hasNextPage,
       },
     };
+  }
+
+  async upsertBatch(seaports: Seaport[]) {
+    
+    const values = Prisma.join(seaports.map(seaport => Prisma.sql`(
+      ${seaport.tenantId}, 
+      ${seaport.integrationId}, 
+      ${seaport.portName}, 
+      ${seaport.locode}, 
+      ${seaport.latitude}, 
+      ${seaport.longitude},
+      ${seaport.countryIso},
+      ${seaport.timezoneOlson}
+    )`));
+
+    const query = Prisma.sql`
+      INSERT INTO "Seaport" ("tenantId", "integrationId", "portName", "locode", "latitude", "longitude", "countryIso", "timezoneOlson")
+      VALUES ${values}
+      ON CONFLICT ("tenantId", "locode") 
+      DO UPDATE SET
+      "portName" = EXCLUDED."portName",
+      "latitude" = EXCLUDED."latitude",
+      "longitude" = EXCLUDED."longitude",
+      "countryIso" = EXCLUDED."countryIso",
+      "timezoneOlson" = EXCLUDED."timezoneOlson"
+      WHERE "Seaport"."tenantId" = EXCLUDED."tenantId" AND "Seaport"."locode" = EXCLUDED."locode"
+      `;
+    return this.prismaService.$executeRaw(query);
   }
 }

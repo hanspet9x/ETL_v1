@@ -62,8 +62,8 @@ model Seaport {
   integrationId String
   portName      String
   locode        String
-  latitude      String
-  longitude     String
+  latitude      Float
+  longitude     Float
   countryIso    String?
   timezoneOlson String?
   tenant        Tenant       @relation(fields: [tenantId], references: [id], onDelete: Cascade)

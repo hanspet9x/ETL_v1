@@ -22,4 +22,11 @@ export class IntegrationsService {
       ],
     });
   }
+  findActiveIntegrations() {
+    return this.prismaService.integration.findMany({
+      where: {
+        isActive: true,
+      }
+    });
+  }
 }
