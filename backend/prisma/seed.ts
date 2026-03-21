@@ -7,32 +7,47 @@ const prisma = new PrismaClient({
 });
 
 async function main() {
-    const tenants = await prisma.tenant.findMany();
-    if (tenants.length > 0) {
-        return;
-    }
-    const tenant =await prisma.tenant.create({
-        data: {
+    
+    const tenantId = 'cmn0tbf7t0000cdsfgoerqe6w';
+    const tenant =await prisma.tenant.upsert({
+        where: {
+            id: tenantId,
+        },
+        update: {
+            name: 'Tilla',
+        },
+        create: {
+            id: tenantId,
             name: 'Tilla',
         },
     });
-    await prisma.integration.create({   
-        data: {
-            source: IntegrationSource.AZURE,
-            sourceUrl: 'https://tillachallenge.blob.core.windows.net/challenge-data',
-            sourceToken: '?sp=rl&st=2026-02-10T07:18:36Z&se=2026-04-01T15:33:36Z&spr=https&sv=2024-11-04&sr=c&sig=hWOx9eiybuxnOIIFwUqtNQF%2FMz5oyAwV8HXJWt6pYjM%3D',
-            sourceFileExtension: IntegrationFileExtension.XLSX,
-            tillaToTenantMapping: {
-                'locode': '',
-                'portName': '',
-                'latitude': '',
-                'longitude': '',
-                'countryIso': '',
-                'timezoneOlson': '',
-            },
-            isActive: true,
+    const integraitonData = {
+        source: IntegrationSource.AZURE,
+        sourceUrl: 'https://tillachallenge.blob.core.windows.net/challenge-data',
+        sourceToken: '?sp=rl&st=2026-02-10T07:18:36Z&se=2026-04-01T15:33:36Z&spr=https&sv=2024-11-04&sr=c&sig=hWOx9eiybuxnOIIFwUqtNQF%2FMz5oyAwV8HXJWt6pYjM%3D',
+        sourceFileExtension: IntegrationFileExtension.XLSX,
+        tillaToTenantMapping: {
+            'locode': 'unLocCode',
+            'portName': 'portName',
+            'latitude': 'latitude',
+            'longitude': 'longitude',
+            'countryIso': 'countryIso',
+            'timezoneOlson': 'appTimeZone',
+        },
+        isActive: true,
+        tenantId: tenant.id,
+    }
+    const integration = await prisma.integration.findFirst({
+        where: {
             tenantId: tenant.id,
         },
+    });
+    await prisma.integration.upsert({   
+        where: {
+            id: integration?.id,
+        },
+        update: integraitonData,
+        create: integraitonData,
     });
 }
 

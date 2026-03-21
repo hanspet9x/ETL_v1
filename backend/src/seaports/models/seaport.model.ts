@@ -5,28 +5,27 @@ export class SeaportModel {
   @Field(() => ID)
   id!: string;
 
-  @Field()
+  @Field(() => String)
   tenantId!: string;
 
-  @Field()
+  @Field(() => String)
   integrationId!: string;
 
-  @Field()
+  @Field(() => String)
   portName!: string;
 
-  @Field()
+  @Field(() => String)
   locode!: string;
 
-  @Field()
+  @Field(() => String)
   latitude!: string;
 
-  @Field()
+  @Field(() => String)
   longitude!: string;
 
-  @Field({ nullable: true })
+  @Field(() => String, { nullable: true })
   countryIso!: string | null;
 
-  @Field({ nullable: true })
+  @Field(() => String, { nullable: true })
   timezoneOlson!: string | null;
 }
-

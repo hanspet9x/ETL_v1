@@ -1,11 +1,12 @@
-import { Injectable } from "@nestjs/common";
-import { CloudStorageService } from "src/cloudStorage/cloudStorage.service";
-import { IntegrationsService } from "src/integrations/integrations.service";
-import { SyncRunsService } from "src/sync-runs/sync-runs.service";
-import { SeaportsService } from "src/seaports/seaports.service";
-import { Seaport, SyncRunStatus } from "generated/prisma/client";
-import { uuid } from "src/utils/common";
-import { getTenantAndIntegrationKey, splitTenantAndIntegrationKey } from "src/utils/keys";
+import { Inject, Injectable } from '@nestjs/common';
+import { Seaport, SyncRunStatus } from '../../generated/prisma/client';
+
+import { CloudStorageService } from '../cloudStorage/cloudStorage.service';
+import { IntegrationsService } from '../integrations/integrations.service';
+import { SeaportsService } from '../seaports/seaports.service';
+import { SyncRunsService } from '../sync-runs/sync-runs.service';
+import { uuid } from '../utils/common';
+import { getTenantAndIntegrationKey, splitTenantAndIntegrationKey } from '../utils/keys';
 
 
 interface ITenantFile {
@@ -53,9 +54,13 @@ interface IETLResult {
 @Injectable()
 export class EtlService {
     constructor(
+        @Inject(CloudStorageService)
         private readonly cloudStorageService: CloudStorageService,
+        @Inject(IntegrationsService)
         private readonly integrationsService: IntegrationsService,
+        @Inject(SyncRunsService)
         private readonly syncRunsService: SyncRunsService,
+        @Inject(SeaportsService)
         private readonly seaportsService: SeaportsService,
     ) { }
     async run() {
@@ -81,7 +86,7 @@ export class EtlService {
                 };
             }
         }
-        console.log('Files extracted', files);
+        // console.log('Files extracted', files[0]);
         if(files.length === 0) {
             console.error('No files found to process');
             throw new Error('No files found to process');
@@ -94,8 +99,8 @@ export class EtlService {
             tenantResult.skippedRecordCount = record.skippedRecordCount;
             etlResult[tenantAndIntegrationKey] = tenantResult;
         }
+        // console.log('transformed', transformed[0])
 
-        console.log('Transformed', transformed);
         const loadResults: ILoadResult[] = [];
         for (const record of transformed) {
             const loadResult = await this.load(record);
@@ -110,7 +115,7 @@ export class EtlService {
             etlResult[tenantAndIntegrationKey] = tenantResult;
             tenantResult.completedAt = loadResult.completedAt;
         }
-        
+        await this.report(etlResult);
     }
 
     $normalizeString(value: string): string {
@@ -250,6 +255,7 @@ export class EtlService {
             } catch (error) {
                 console.error('Error upserting seaports', error);
                 failedCount += chunk.length;
+                continue;
             }
         }
         return {

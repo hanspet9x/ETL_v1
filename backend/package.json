@@ -3,9 +3,9 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "dev": "tsx watch --tsconfig tsconfig.json src/main.ts",
+    "dev": "sh -c 'tsc -w -p tsconfig.json >/tmp/tilla-backend-tsc.log 2>&1 & TSC_PID=$!; trap \"kill $TSC_PID $APP_PID 2>/dev/null\" EXIT INT TERM; LAST=\"\"; while true; do if [ -f dist/src/main.js ]; then NEXT=$(stat -f %m dist/src/main.js); if [ \"$NEXT\" != \"$LAST\" ]; then LAST=\"$NEXT\"; kill $APP_PID 2>/dev/null; node dist/src/main.js & APP_PID=$!; fi; fi; sleep 1; done'",
     "build": "tsc -p tsconfig.build.json",
-    "start": "node dist/main.js",
+    "start": "node dist/src/main.js",
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev",
     "postinstall": "prisma generate"

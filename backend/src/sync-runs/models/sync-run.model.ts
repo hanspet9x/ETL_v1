@@ -7,10 +7,10 @@ export class SyncRunModel {
   @Field(() => ID)
   id!: string;
 
-  @Field()
+  @Field(() => String)
   tenantId!: string;
 
-  @Field()
+  @Field(() => String)
   integrationId!: string;
 
   @Field(() => SyncRunStatus)

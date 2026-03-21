@@ -1,6 +1,11 @@
 import { Injectable } from "@nestjs/common";
+import { webcrypto } from "node:crypto";
 import { ContainerClient } from "@azure/storage-blob";
-import { IntegrationFileExtension, IntegrationSource } from "generated/prisma/client";
+import { IntegrationFileExtension, IntegrationSource } from "../../generated/prisma/client";
+
+if (!globalThis.crypto) {
+    globalThis.crypto = webcrypto as Crypto;
+}
 import * as XLSX from 'xlsx';
 @Injectable()
 export class CloudStorageService {

@@ -1,0 +1,92 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+enum IntegrationFileExtension {
+  JSON
+  XLS
+  XLSX
+}
+
+type IntegrationModel {
+  createdAt: DateTime!
+  id: ID!
+  isActive: Boolean!
+  source: IntegrationSource!
+  sourceFileExtension: IntegrationFileExtension!
+  sourceUrl: String!
+  tenantId: String!
+  updatedAt: DateTime!
+}
+
+enum IntegrationSource {
+  AWS
+  AZURE
+  GCP
+}
+
+type PageInfoModel {
+  endCursor: String
+  hasNextPage: Boolean!
+  hasPreviousPage: Boolean!
+  startCursor: String
+}
+
+type Query {
+  tenantActiveIntegrations(tenantId: String!): [IntegrationModel!]!
+  tenantSeaports(after: String, before: String, first: Int = 20, integrationId: String!, tenantId: String!): SeaportConnectionModel!
+  tenantSyncRunReport(integrationId: String!, tenantId: String!): SyncRunModel
+  tenants: [TenantModel!]!
+}
+
+type SeaportConnectionModel {
+  count: Int!
+  nodes: [SeaportModel!]!
+  pageInfo: PageInfoModel!
+}
+
+type SeaportModel {
+  countryIso: String
+  id: ID!
+  integrationId: String!
+  latitude: String!
+  locode: String!
+  longitude: String!
+  portName: String!
+  tenantId: String!
+  timezoneOlson: String
+}
+
+type SyncRunModel {
+  completedAt: DateTime
+  createdAt: DateTime!
+  id: ID!
+  integrationId: String!
+  startedAt: DateTime!
+  status: SyncRunStatus!
+  tenantId: String!
+  totalRecords: Int!
+  totalRecordsFailed: Int!
+  totalRecordsProcessed: Int!
+  totalRecordsSkipped: Int!
+  updatedAt: DateTime!
+}
+
+enum SyncRunStatus {
+  COMPLETED
+  FAILED
+  PARTIALLY_COMPLETED
+  STARTED
+}
+
+type TenantModel {
+  createdAt: DateTime!
+  id: ID!
+  name: String!
+  updatedAt: DateTime!
+}

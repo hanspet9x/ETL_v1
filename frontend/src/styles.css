@@ -1,12 +1,56 @@
 :root {
   font-family: "Space Grotesk", "Segoe UI", sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+  color: #17212c;
+  background:
+    radial-gradient(circle at top left, rgba(255, 169, 87, 0.18), transparent 30%),
+    radial-gradient(circle at bottom right, rgba(84, 176, 255, 0.14), transparent 28%),
+    linear-gradient(140deg, #f8efe5 0%, #f5f7fb 46%, #eef4fb 100%);
+  --text-main: #17212c;
+  --text-soft: rgba(23, 33, 44, 0.72);
+  --text-muted: rgba(23, 33, 44, 0.62);
+  --eyebrow: #cb6a2c;
+  --shell-border: rgba(24, 42, 58, 0.1);
+  --shell-bg: rgba(255, 255, 255, 0.74);
+  --panel-bg: rgba(255, 255, 255, 0.68);
+  --panel-border: rgba(24, 42, 58, 0.1);
+  --card-bg: linear-gradient(180deg, rgba(255, 255, 255, 0.94), rgba(242, 246, 251, 0.88));
+  --field-bg: rgba(255, 255, 255, 0.94);
+  --field-border: rgba(24, 42, 58, 0.14);
+  --table-head: rgba(23, 33, 44, 0.05);
+  --row-hover: rgba(23, 33, 44, 0.03);
+  --button-text: #fff9f4;
+  --button-bg: linear-gradient(135deg, #ff9b61, #ff7a59);
+  --toggle-bg: rgba(255, 255, 255, 0.9);
+  --toggle-border: rgba(24, 42, 58, 0.12);
+  --shadow: 0 30px 80px rgba(78, 95, 121, 0.18);
+}
+
+:root[data-theme="dark"] {
   color: #f5efe4;
   background:
     radial-gradient(circle at top left, rgba(255, 162, 90, 0.16), transparent 28%),
     radial-gradient(circle at bottom right, rgba(84, 176, 255, 0.12), transparent 26%),
     linear-gradient(140deg, #0e1620 0%, #101a27 42%, #0b1119 100%);
-  line-height: 1.5;
-  font-weight: 400;
+  --text-main: #f5efe4;
+  --text-soft: rgba(244, 239, 232, 0.84);
+  --text-muted: rgba(245, 239, 228, 0.68);
+  --eyebrow: #ffb37f;
+  --shell-border: rgba(255, 255, 255, 0.1);
+  --shell-bg: rgba(10, 17, 25, 0.76);
+  --panel-bg: rgba(255, 255, 255, 0.04);
+  --panel-border: rgba(255, 255, 255, 0.08);
+  --card-bg: linear-gradient(180deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.03));
+  --field-bg: rgba(8, 14, 21, 0.92);
+  --field-border: rgba(255, 255, 255, 0.12);
+  --table-head: rgba(255, 255, 255, 0.05);
+  --row-hover: rgba(255, 255, 255, 0.03);
+  --button-text: #121821;
+  --button-bg: linear-gradient(135deg, #ff9b61, #ff7a59);
+  --toggle-bg: rgba(255, 255, 255, 0.08);
+  --toggle-border: rgba(255, 255, 255, 0.1);
+  --shadow: 0 30px 80px rgba(0, 0, 0, 0.35);
 }
 
 * {
@@ -17,6 +61,8 @@ body {
   margin: 0;
   min-width: 320px;
   min-height: 100vh;
+  color: var(--text-main);
+  background: inherit;
 }
 
 code {
@@ -32,11 +78,18 @@ code {
   width: min(1180px, 100%);
   margin: 0 auto;
   padding: 32px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--shell-border);
   border-radius: 28px;
-  background: rgba(10, 17, 25, 0.76);
+  background: var(--shell-bg);
   backdrop-filter: blur(16px);
-  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.35);
+  box-shadow: var(--shadow);
+}
+
+.hero-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 20px;
 }
 
 .section-heading {
@@ -48,7 +101,7 @@ code {
   text-transform: uppercase;
   letter-spacing: 0.18em;
   font-size: 0.78rem;
-  color: #ffb37f;
+  color: var(--eyebrow);
 }
 
 h1 {
@@ -61,7 +114,19 @@ h1 {
   margin: 20px 0 0;
   max-width: 62ch;
   font-size: 1.05rem;
-  color: rgba(244, 239, 232, 0.84);
+  color: var(--text-soft);
+}
+
+.theme-switch {
+  flex-shrink: 0;
+  padding: 12px 16px;
+  border-radius: 999px;
+  border: 1px solid var(--toggle-border);
+  background: var(--toggle-bg);
+  color: var(--text-main);
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
 }
 
 .error-banner {
@@ -77,8 +142,8 @@ h1 {
   margin-top: 18px;
   padding: 22px;
   border-radius: 22px;
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: var(--panel-bg);
+  border: 1px solid var(--panel-border);
 }
 
 .panel-header {
@@ -95,7 +160,7 @@ h1 {
 }
 
 .panel-header span {
-  color: rgba(245, 239, 228, 0.68);
+  color: var(--text-muted);
   font-size: 0.95rem;
 }
 
@@ -112,15 +177,15 @@ h1 {
 
 .field span {
   font-size: 0.92rem;
-  color: rgba(245, 239, 228, 0.72);
+  color: var(--text-soft);
 }
 
 .field select {
   width: 100%;
   padding: 14px 16px;
   border-radius: 14px;
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  background: rgba(8, 14, 21, 0.92);
+  border: 1px solid var(--field-border);
+  background: var(--field-bg);
   color: inherit;
   font: inherit;
 }
@@ -134,14 +199,14 @@ h1 {
 .metric-card {
   padding: 18px;
   border-radius: 18px;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.03));
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: var(--card-bg);
+  border: 1px solid var(--panel-border);
 }
 
 .metric-card span {
   display: block;
   margin-bottom: 10px;
-  color: rgba(245, 239, 228, 0.66);
+  color: var(--text-muted);
   font-size: 0.9rem;
 }
 
@@ -163,8 +228,8 @@ h1 {
   padding: 10px 14px;
   border: 0;
   border-radius: 999px;
-  background: linear-gradient(135deg, #ff9b61, #ff7a59);
-  color: #121821;
+  background: var(--button-bg);
+  color: var(--button-text);
   font: inherit;
   font-weight: 700;
   cursor: pointer;
@@ -178,7 +243,7 @@ h1 {
 .table-wrap {
   overflow-x: auto;
   border-radius: 18px;
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border: 1px solid var(--panel-border);
 }
 
 table {
@@ -188,28 +253,28 @@ table {
 }
 
 thead {
-  background: rgba(255, 255, 255, 0.05);
+  background: var(--table-head);
 }
 
 th,
 td {
   padding: 14px 16px;
   text-align: left;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  border-bottom: 1px solid var(--panel-border);
 }
 
 tbody tr:hover {
-  background: rgba(255, 255, 255, 0.03);
+  background: var(--row-hover);
 }
 
 .empty-cell {
   text-align: center;
-  color: rgba(245, 239, 228, 0.64);
+  color: var(--text-muted);
 }
 
 .table-footnote {
   margin: 14px 0 0;
-  color: rgba(245, 239, 228, 0.68);
+  color: var(--text-muted);
 }
 
 @media (max-width: 640px) {
@@ -229,6 +294,10 @@ tbody tr:hover {
 
   .panel-header {
     align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .hero-row {
     flex-direction: column;
   }
 }

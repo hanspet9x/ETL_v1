@@ -95,6 +95,7 @@ function formatDate(value: string | null | undefined) {
 }
 
 function App() {
+  const [theme, setTheme] = useState<'light' | 'dark'>('light');
   const [tenants, setTenants] = useState<Tenant[]>([]);
   const [integrations, setIntegrations] = useState<Integration[]>([]);
   const [selectedTenantId, setSelectedTenantId] = useState('');
@@ -106,6 +107,10 @@ function App() {
   const [reportLoading, setReportLoading] = useState(false);
   const [seaportsLoading, setSeaportsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    document.documentElement.dataset.theme = theme;
+  }, [theme]);
 
   useEffect(() => {
     async function loadTenants() {
@@ -305,13 +310,23 @@ function App() {
   return (
     <main className="page-shell">
       <section className="dashboard-card">
-        <div className="section-heading">
-          <p className="eyebrow">Tenant Monitor</p>
-          <h1>Tenant integration and seaport overview</h1>
-          <p className="lede">
-            Pick a tenant, review its active integration, inspect the latest sync run, and page
-            through seaport records in batches of 20.
-          </p>
+        <div className="hero-row">
+          <div className="section-heading">
+            <p className="eyebrow">Tenant Monitor</p>
+            <h1>Tenant integration and seaport overview</h1>
+            <p className="lede">
+              Pick a tenant, review its active integration, inspect the latest sync run, and page
+              through seaport records in batches of 20.
+            </p>
+          </div>
+
+          <button
+            type="button"
+            className="theme-switch"
+            onClick={() => setTheme((currentTheme) => (currentTheme === 'light' ? 'dark' : 'light'))}
+          >
+            {theme === 'light' ? 'Dark mode' : 'Light mode'}
+          </button>
         </div>
 
         {error ? <div className="error-banner">{error}</div> : null}

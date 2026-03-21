@@ -1,11 +1,11 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 
 import { PrismaService } from '../prisma/prisma.service';
-import { SyncRun } from 'generated/prisma/client';
+import { SyncRun } from '../../generated/prisma/client';
 
 @Injectable()
 export class SyncRunsService {
-  constructor(private readonly prismaService: PrismaService) {}
+  constructor(@Inject(PrismaService) private readonly prismaService: PrismaService) {}
 
   findLatestByTenantAndIntegration(tenantId: string, integrationId: string) {
     return this.prismaService.syncRun.findFirst({

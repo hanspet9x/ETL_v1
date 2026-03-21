@@ -1,7 +1,7 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 
 import { PrismaService } from '../prisma/prisma.service';
-import { Prisma, Seaport } from 'generated/prisma/client';
+import { Prisma, Seaport } from '../../generated/prisma/client';
 
 type SeaportPageParams = {
   tenantId: string;
@@ -13,7 +13,7 @@ type SeaportPageParams = {
 
 @Injectable()
 export class SeaportsService {
-  constructor(private readonly prismaService: PrismaService) {}
+  constructor(@Inject(PrismaService) private readonly prismaService: PrismaService) {}
 
   async findPage({ tenantId, integrationId, first, after, before }: SeaportPageParams) {
     const pageSize = Math.max(1, Math.min(first, 20));
@@ -93,6 +93,7 @@ export class SeaportsService {
   async upsertBatch(seaports: Seaport[]) {
     
     const values = Prisma.join(seaports.map(seaport => Prisma.sql`(
+      ${seaport.id},
       ${seaport.tenantId}, 
       ${seaport.integrationId}, 
       ${seaport.portName}, 
@@ -104,7 +105,7 @@ export class SeaportsService {
     )`));
 
     const query = Prisma.sql`
-      INSERT INTO "Seaport" ("tenantId", "integrationId", "portName", "locode", "latitude", "longitude", "countryIso", "timezoneOlson")
+      INSERT INTO "Seaport" ("id","tenantId", "integrationId", "portName", "locode", "latitude", "longitude", "countryIso", "timezoneOlson")
       VALUES ${values}
       ON CONFLICT ("tenantId", "locode") 
       DO UPDATE SET

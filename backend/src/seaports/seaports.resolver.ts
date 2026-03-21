@@ -9,11 +9,11 @@ export class SeaportsResolver {
 
   @Query(() => SeaportConnectionModel, { name: 'tenantSeaports' })
   tenantSeaports(
-    @Args('tenantId') tenantId: string,
-    @Args('integrationId') integrationId: string,
+    @Args('tenantId', { type: () => String }) tenantId: string,
+    @Args('integrationId', { type: () => String }) integrationId: string,
     @Args('first', { type: () => Int, nullable: true, defaultValue: 20 }) first: number,
-    @Args('after', { nullable: true }) after?: string,
-    @Args('before', { nullable: true }) before?: string,
+    @Args('after', { type: () => String, nullable: true }) after?: string,
+    @Args('before', { type: () => String, nullable: true }) before?: string,
   ) {
     return this.seaportsService.findPage({
       tenantId,

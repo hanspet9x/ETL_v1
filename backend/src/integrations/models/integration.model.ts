@@ -13,16 +13,16 @@ export class IntegrationModel {
   @Field(() => IntegrationSource)
   source!: IntegrationSource;
 
-  @Field()
+  @Field(() => String)
   sourceUrl!: string;
 
   @Field(() => IntegrationFileExtension)
   sourceFileExtension!: IntegrationFileExtension;
 
-  @Field()
+  @Field(() => Boolean)
   isActive!: boolean;
 
-  @Field()
+  @Field(() => String)
   tenantId!: string;
 
   @Field(() => GraphQLISODateTime)

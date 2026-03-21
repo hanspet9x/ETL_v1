@@ -9,8 +9,8 @@ export class SyncRunsResolver {
 
   @Query(() => SyncRunModel, { name: 'tenantSyncRunReport', nullable: true })
   tenantSyncRunReport(
-    @Args('tenantId') tenantId: string,
-    @Args('integrationId') integrationId: string,
+    @Args('tenantId', { type: () => String }) tenantId: string,
+    @Args('integrationId', { type: () => String }) integrationId: string,
   ) {
     return this.syncRunsService.findLatestByTenantAndIntegration(tenantId, integrationId);
   }
