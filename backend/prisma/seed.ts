@@ -24,7 +24,7 @@ async function main() {
     const integraitonData = {
         source: IntegrationSource.AZURE,
         sourceUrl: 'https://tillachallenge.blob.core.windows.net/challenge-data',
-        sourceToken: '?sp=rl&st=2026-02-10T07:18:36Z&se=2026-04-01T15:33:36Z&spr=https&sv=2024-11-04&sr=c&sig=hWOx9eiybuxnOIIFwUqtNQF%2FMz5oyAwV8HXJWt6pYjM%3D',
+        sourceToken: '?sp=rl&st=2026-02-10T07:18:36Z&se=2026-04-01T15:33:36Z&spr=https&sv=2024-11-04&sr=c&sig=',
         sourceFileExtension: IntegrationFileExtension.XLSX,
         tillaToTenantMapping: {
             'locode': 'unLocCode',
